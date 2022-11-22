@@ -40,3 +40,4 @@ for rect in rects:
 	# display the output images
 	cv2.imshow("Original", faceOrig)
 	cv2.imshow("Face Aligned", faceAligned)
+	cv2.waitKey(0)
