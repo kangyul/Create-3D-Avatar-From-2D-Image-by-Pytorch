@@ -22,6 +22,7 @@ class FaceAligner:
     def align(self, image, gray, rect):
         # convert the landmark (x, y)-coordinates to a NumPy array
         shape = self.predictor(gray, rect)
+        print("parts", shape.num_parts)
         shape = shape_to_np(shape)
 
         # extract the left and right eye (x, y)-coordinates
@@ -56,18 +57,21 @@ class FaceAligner:
         # between the two eyes in the input image
         eyesCenter = ((leftEyeCenter[0] + rightEyeCenter[0]) / 2, (leftEyeCenter[1] + rightEyeCenter[1]) / 2)
 
+        # print('scale' , scale)
+
         # grab the rotation matrix for rotating and scaling the face
         M = cv2.getRotationMatrix2D(eyesCenter, angle, scale)
+
+        print("M\n", M)
 
         # update the translation component of the matrix
         tX = self.desiredFaceWidth * 0.5
         tY = self.desiredFaceHeight * self.desiredLeftEye[1]
-        M[0, 2] += (tX - eyesCenter[0])
-        M[1, 2] += (tY - eyesCenter[1])
+        M[0, 2] += (tX - eyesCenter[0])  # x shift
+        M[1, 2] += (tY - eyesCenter[1])  # y shift
 
         # apply the affine transformation
         (w, h) = (self.desiredFaceWidth, self.desiredFaceHeight)
-        output = cv2.warpAffine(image, M, (w, h),
-            flags=cv2.INTER_CUBIC)
+        output = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC)
         # return the aligned face
-        return output
+        return output, M, shape
