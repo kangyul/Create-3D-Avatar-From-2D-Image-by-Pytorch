@@ -10,6 +10,8 @@ import argparse
 import dlib
 import cv2
 import numpy as np
+import csv
+import pandas as pd
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -37,6 +39,16 @@ if not os.path.exists(out_dir_path):
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 fa = FaceAligner(predictor, desiredFaceWidth=256, desiredFaceHeight=256, desiredLeftEye=(0.33, 0.3))
+
+outfile =  open(join(out_dir_path, "facefeature.csv"), 'w')
+headers = np.array(['imagefile']) 
+for h in range(68):
+    headers = np.append(headers, [str(h*2),str(h*2+1)])
+        # ['f_x{h}' , 'f_y{h}'])
+
+wr = csv.writer(outfile)
+wr.writerow(headers)
+outfile.close()
 
 for file in onlyfiles:
 # for file in onlyfiles[:1]:    
@@ -85,8 +97,8 @@ for file in onlyfiles:
         w = alignedImage.shape[0]
         h = alignedImage.shape[1]
         cv2.imshow("Aligned Image", alignedImage)
+        # 이미지 하나에 하나의 얼굴만 하는거로 
         break
-
 
         # print(rects)
     if cv2.waitKey(10) == 27: # q를 누르면 종료
