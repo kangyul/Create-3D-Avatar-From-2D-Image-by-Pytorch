@@ -43,15 +43,14 @@ fa = FaceAligner(predictor, desiredFaceWidth=256, desiredFaceHeight=256, desired
 outfile =  open(join(out_dir_path, "facefeature.csv"), 'w')
 headers = np.array(['imagefile']) 
 for h in range(68):
-    headers = np.append(headers, [str(h*2),str(h*2+1)])
-        # ['f_x{h}' , 'f_y{h}'])
+    headers = np.append(headers, [str(h*2), str(h*2+1)])
 
 wr = csv.writer(outfile)
 wr.writerow(headers)
-outfile.close()
 
-for file in onlyfiles:
-# for file in onlyfiles[:1]:    
+
+# for file in onlyfiles:
+for file in onlyfiles[:5]:    
     print(f"Processing image {file}")
     img_file_name = f"{img_dir_path}/{file}"
 
@@ -62,6 +61,8 @@ for file in onlyfiles:
     # image
     rects = detector(gray, 2)
 
+    face_feature = np.array(file)
+    
     # loop over the face detections      
     face_count = 0
     for rect in rects:
@@ -75,7 +76,10 @@ for file in onlyfiles:
         TM = rotM.T
         print('TM\n', TM, "TM Shape ", TM.shape)
 
-        imagesize = alignedImage.shape[:2]
+        imagesize = np.array (alignedImage.shape[:2])
+        print("imagesize shape ", imagesize)
+        # imagesize = np.transpose(imagesize)
+        # print("imagesize shape ", imagesize.shape)
 
         for point in shape:
             vec3 = np.array([[point[0]], [point[1]], [1]]) 
@@ -88,6 +92,11 @@ for file in onlyfiles:
             #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)        
             normal = np.divide(tpoint.T, imagesize)
             print('point :', point, " tpoint" , tpoint, 'normal', normal)
+            face_feature = np.append(face_feature, normal.T)
+
+        print(len(face_feature))
+
+        wr.writerow(face_feature);    
       
         path, filename = os.path.split(img_file_name)
         new_file_name = join(out_dir_path, filename)
@@ -104,5 +113,5 @@ for file in onlyfiles:
     if cv2.waitKey(10) == 27: # q를 누르면 종료
         break
 
-        
+outfile.close()    
         
