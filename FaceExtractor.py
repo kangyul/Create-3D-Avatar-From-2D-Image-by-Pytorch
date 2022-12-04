@@ -86,7 +86,7 @@ for file in onlyfiles:
             # p = np.array([tpoint[0],tpoint[1]])
             cv2.circle(alignedImage, (int(tpoint[0]), int(tpoint[1])), 3, color=(100,0,0), thickness=2)
             #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)        
-            normal = np.divide(tpoint, imagesize)
+            normal = np.divide(tpoint.T, imagesize)
             print('point :', point, " tpoint" , tpoint, 'normal', normal)
       
         path, filename = os.path.split(img_file_name)
