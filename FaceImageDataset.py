@@ -22,7 +22,8 @@ class FaceImageDataset(Dataset):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-        img_path = os.path.join(self.img_dir, f'{self.img_labels.iloc[idx, 0]}' + ".png")
+        # img_path = os.path.join(self.img_dir, f'{self.img_labels.iloc[idx, 0]}' + ".png")
+        img_path = os.path.join(self.img_dir, self.img_labels.iloc[idx, 0])
         
         #image = read_image(img_path)
         image = io.imread(img_path)
