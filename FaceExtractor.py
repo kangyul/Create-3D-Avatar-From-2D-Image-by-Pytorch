@@ -49,8 +49,8 @@ wr = csv.writer(outfile)
 wr.writerow(headers)
 
 
-# for file in onlyfiles:
-for file in onlyfiles[:5]:    
+for file in onlyfiles:
+#for file in onlyfiles[:5]:    
     print(f"Processing image {file}")
     img_file_name = f"{img_dir_path}/{file}"
 
