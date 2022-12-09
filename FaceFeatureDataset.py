@@ -25,8 +25,8 @@ class FaceFeatureDataset(Dataset):
             idx = idx.tolist()
         landmarks = self.landmarks_frame.iloc[idx, 1:]
         landmarks = np.array([landmarks])
-        landmarks = landmarks.astype('float').reshape(-1, 2)
-        label = torch.Tensor(self.labels.iloc[idx, 1:])
+        landmarks = landmarks.astype(np.float32).reshape(-1, 2)        
+        label = torch.Tensor(self.labels.iloc[idx, 1:]) #, dtype=torch.float64)        
         if self.transform :
             feature = self.transform(feature)
         if self.target_transform:
