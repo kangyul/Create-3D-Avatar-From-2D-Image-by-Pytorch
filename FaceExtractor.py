@@ -48,9 +48,8 @@ for h in range(68):
 wr = csv.writer(outfile)
 wr.writerow(headers)
 
-
 for file in onlyfiles:
-#for file in onlyfiles[:5]:    
+# for file in onlyfiles[:5]:    
     print(f"Processing image {file}")
     img_file_name = f"{img_dir_path}/{file}"
 
@@ -80,6 +79,7 @@ for file in onlyfiles:
         print("imagesize shape ", imagesize)
         # imagesize = np.transpose(imagesize)
         # print("imagesize shape ", imagesize.shape)
+        center = np.array([0.5, 0.5])
 
         for point in shape:
             vec3 = np.array([[point[0]], [point[1]], [1]]) 
@@ -88,9 +88,10 @@ for file in onlyfiles:
             # alignedPoints = point * rotM
             # print(alignedPoints)
             # p = np.array([tpoint[0],tpoint[1]])
-            cv2.circle(alignedImage, (int(tpoint[0]), int(tpoint[1])), 3, color=(100,0,0), thickness=2)
-            #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)        
-            normal = np.divide(tpoint.T, imagesize)
+            #cv2.circle(alignedImage, (int(tpoint[0]), int(tpoint[1])), 3, color=(100,0,0), thickness=2)
+            #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)
+            normal = np.divide(tpoint.T, imagesize) 
+            normal = normal - center  # -1~1 
             print('point :', point, " tpoint" , tpoint, 'normal', normal)
             face_feature = np.append(face_feature, normal.T)
 
