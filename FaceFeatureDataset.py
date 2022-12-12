@@ -23,10 +23,12 @@ class FaceFeatureDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        landmarks = self.landmarks_frame.iloc[idx, 1:]
-        landmarks = np.array([landmarks])
-        landmarks = landmarks.astype(np.float32).reshape(-1, 2)        
-        label = torch.FloatTensor(self.labels.iloc[idx, 1:]) #, dtype=torch.float64)        
+        landmarks = torch.FloatTensor(self.landmarks_frame.iloc[idx, 1:])
+        # landmarks = np.array([landmarks])
+        # landmarks = landmarks.astype(np.float32).reshape(-1, 2)        
+        # label = self.labels.iloc[idx, 1:]  # 0.5가 중심 0 ~ 1 사이의 값이다.
+        label = self.labels.iloc[idx, 1:]        
+        label = torch.FloatTensor(label)
         if self.transform :
             feature = self.transform(feature)
         if self.target_transform:
