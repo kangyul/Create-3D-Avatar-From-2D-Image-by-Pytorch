@@ -18,6 +18,7 @@ ap = argparse.ArgumentParser()
 #ap.add_argument("-p", "--shape-predictor", required=True, help="path to facial landmark predictor")
 ap.add_argument("-i", "--imageDir", required=False,
                 help="path to input image directory")
+
 ap.add_argument("-o", "--outDir", required=False,
                 help="path to output image directory")
 args = vars(ap.parse_args())
