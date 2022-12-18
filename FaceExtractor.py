@@ -82,8 +82,8 @@ for imagefile in img_files:
         # (x, y, w, h) = rect_to_bb(rect)
         # faceOrig = imutils.resize(image[y:y + h, x:x + w], width=256)
         alignedImage, rotM, shape = fa.align(image, gray, rect)
-        print('transformat\n', rotM)
-        TM = rotM.T
+        print('Rot\n', rotM)
+        TM = rotM.transpose()
         print('TM\n', TM, "TM Shape ", TM.shape)
 
         imagesize = np.array(alignedImage.shape[:2])
@@ -93,23 +93,23 @@ for imagefile in img_files:
         center = np.array([0.5, 0.5])
 
         for point in shape:
-            vec3 = np.array([[point[0]], [point[1]], [1]])
-            tpoint = np.matmul(rotM, vec3)
-            # print(tpoint.shape)
+            #vec3 = np.array([[point[0]], [point[1]], [1]])
+            #tpoint = np.matmul(rotM, vec3)
+            vec3 = np.array([point[0], point[1], 1])
+            #tpoint = np.matmul(rotM, vec3)
+            tpoint = np.matmul(vec3, TM)
             # alignedPoints = point * rotM
             # print(alignedPoints)
             # p = np.array([tpoint[0],tpoint[1]])
-            #cv2.circle(alignedImage, (int(tpoint[0]), int(tpoint[1])), 3, color=(100,0,0), thickness=2)
+            cv2.circle(alignedImage, tpoint.astype(int),  3,
+                       color=(100, 0, 0), thickness=2)
             #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)
-            #normal = np.divide(tpoint.T, imagesize)
-            # normal = normal - center  # -1~1
-            # print('point :', point, " tpoint", tpoint, 'normal', normal)
-            print('point :', point, " tpoint", tpoint)
-            # face_feature = np.append(face_feature, normal.T)
-            face_feature = np.append(face_feature, tpoint)
-
-        print(len(face_feature))
-
+            normal = np.divide(tpoint.T, imagesize)
+            normal = normal - center  # -1~1
+            print('point :', point, " tpoint", tpoint, 'normal', normal.T)
+            face_feature = np.append(face_feature, normal.T)
+            #face_feature = np.append(face_feature, tpoint)
+        # print(face_feature)
         wr.writerow(face_feature)
 
         path, filename = os.path.split(img_file_name)
