@@ -19,6 +19,8 @@ ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--imageDir", required=False,
                 help="path to input image directory")
 
+ap.add_argument("-c", "--csv", required=True, help="csv result")
+
 ap.add_argument("-o", "--outDir", required=False,
                 help="path to output image directory")
 args = vars(ap.parse_args())
@@ -32,12 +34,16 @@ out_dir_path = args["outDir"]
 if not out_dir_path:
     out_dir_path = './outimg'
 
-onlyfiles = [f for f in listdir(img_dir_path) if isfile(
-    join(img_dir_path, f)) and f.split(".")[1] == "png"]
+csv_file_path = args["csv"]
+
+df = pd.read_csv(csv_file_path)
+img_files = df['index']
+
+# onlyfiles = [f for f in listdir(img_dir_path) if isfile(
+#    join(img_dir_path, f)) and f.split(".")[1] == "png"]
 
 if not os.path.exists(out_dir_path):
     os.makedirs(out_dir_path)
-
 # initialize dlib's face detector (HOG-based) and then create
 # the facial landmark predictor and the face aligner
 detector = dlib.get_frontal_face_detector()
@@ -53,10 +59,12 @@ for h in range(68):
 wr = csv.writer(outfile)
 wr.writerow(headers)
 
-for file in onlyfiles:
-    # for file in onlyfiles[:5]:
-    print(f"Processing image {file}")
-    img_file_name = f"{img_dir_path}/{file}"
+# for imagefile in onlyfiles:
+# for imagefile in onlyfiles[:5]:
+for imagefile in img_files:
+    print(f"Processing image {imagefile}")
+    #img_file_name = f"{img_dir_path}/{file}"
+    img_file_name = f"{img_dir_path}/{imagefile}"
 
     # load the input image, resize it, and convert it to grayscale
     image = cv2.imread(img_file_name)
@@ -64,9 +72,7 @@ for file in onlyfiles:
     # show the original input image and detect faces in the grayscale
     # image
     rects = detector(gray, 2)
-
-    face_feature = np.array(file)
-
+    face_feature = np.array(imagefile)
     # loop over the face detections
     face_count = 0
     for rect in rects:
