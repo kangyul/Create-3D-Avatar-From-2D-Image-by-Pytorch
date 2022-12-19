@@ -65,13 +65,15 @@ for imagefile in img_files:
     print(f"Processing image {imagefile}")
     #img_file_name = f"{img_dir_path}/{file}"
     img_file_name = f"{img_dir_path}/{imagefile}"
-
+    if not os.path.isfile(img_file_name):
+        continue
     # load the input image, resize it, and convert it to grayscale
     image = cv2.imread(img_file_name)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # show the original input image and detect faces in the grayscale
     # image
-    rects = detector(gray, 2)
+    #rects = detector(gray, 2)
+    rects = detector(gray, 1)
     face_feature = np.array(imagefile)
     # loop over the face detections
     face_count = 0
@@ -99,11 +101,8 @@ for imagefile in img_files:
             #tpoint = np.matmul(rotM, vec3)
             tpoint = np.matmul(vec3, TM)
             # alignedPoints = point * rotM
-            # print(alignedPoints)
-            # p = np.array([tpoint[0],tpoint[1]])
-            cv2.circle(alignedImage, tpoint.astype(int),  3,
-                       color=(100, 0, 0), thickness=2)
-            #cv2.circle(alignedImage, (int(tpoint[0] - 127 + 0.33 * 127 ),int(tpoint[1] - 127)), 3, color=(100,0,0), thickness=2)
+            # print(alignedPoints)            
+            cv2.circle(alignedImage, tpoint.astype(int),  3, color=(100, 0, 0), thickness=2)
             normal = np.divide(tpoint.T, imagesize)
             normal = normal - center  # -1~1
             print('point :', point, " tpoint", tpoint, 'normal', normal.T)
@@ -115,7 +114,7 @@ for imagefile in img_files:
         path, filename = os.path.split(img_file_name)
         new_file_name = join(out_dir_path, filename)
         # new_file_name = join(img_out_path, f"{img_file_name.split('.')[0]}_aligned_{face_count}.{img_file_name.split('.')[1]}")
-        cv2.imwrite(new_file_name, alignedImage)
+        # cv2.imwrite(new_file_name, alignedImage)
         # for point in shape:
         w = alignedImage.shape[0]
         h = alignedImage.shape[1]
