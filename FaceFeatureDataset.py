@@ -31,13 +31,13 @@ class FaceFeatureDataset(Dataset):
         features = np.array(features, dtype=np.float32)
         features = features.reshape(-1, 2)
         if self.feature_indexes :
-            #print("feature indexes" , self.feature_indexes)            
             features = np.take(features, self.feature_indexes, axis=0)
-            #features = features.take(self.features_indexes, axis=0)
-            #print(features)
         
         label = self.labels.iloc[idx, 1:]
-        label = torch.FloatTensor(label)
+        label = np.array(label, dtype=np.float32)
+        if self.label_indexes:
+            label = np.take(label, self.label_indexes, axis=0)
+        # label = torch.FloatTensor(label)
         if self.transform :
             features = self.transform(features)
         if self.target_transform:
