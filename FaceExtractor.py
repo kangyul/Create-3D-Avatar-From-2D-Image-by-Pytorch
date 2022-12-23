@@ -65,7 +65,7 @@ for imagefile in img_files:
     print(f"Processing image {imagefile}")
     #img_file_name = f"{img_dir_path}/{file}"
     img_file_name = f"{img_dir_path}/{imagefile}"
-    if not os.path.isfile(img_file_name):
+    if not os.path.exists(img_file_name):
         continue
     # load the input image, resize it, and convert it to grayscale
     image = cv2.imread(img_file_name)
