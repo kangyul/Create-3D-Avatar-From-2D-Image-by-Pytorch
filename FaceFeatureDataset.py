@@ -30,8 +30,9 @@ class FaceFeatureDataset(Dataset):
         features = self.landmarks_frame.iloc[idx, 1:]       
         features = np.array(features, dtype=np.float32)
         features = features.reshape(-1, 2).T
-        if self.feature_indexes :
-            features = np.take(features, self.feature_indexes, axis=0)
+        
+        if self.feature_indexes:
+            features = np.take(features, self.feature_indexes, axis=1)
         
         label = self.labels.iloc[idx, 1:]
         label = np.array(label, dtype=np.float32)
